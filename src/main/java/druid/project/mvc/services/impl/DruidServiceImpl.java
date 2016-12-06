@@ -110,9 +110,7 @@ public class DruidServiceImpl implements DruidService {
         return dataList;
     }
 
-    public List<WikiTicker> searchByMetroCode(String metroCode) {
-        //havent broken out any of this part.
-
+    public List<WikiTicker> searchByRegionName(String regionName) {
         List<WikiTicker> dataList = new ArrayList<>();
 
         try (final DruidClient druidClient = DruidClient.create(DRUIDHOST)) {
@@ -125,8 +123,7 @@ public class DruidServiceImpl implements DruidService {
                     .filters(
                             new AndDimFilter(
                                     ImmutableList.<DimFilter>of(
-
-                                            new SelectorDimFilter("namespace", metroCode, null)
+                                            new SelectorDimFilter("regionName", regionName, null)
                                     )
                             )
                     )
@@ -134,53 +131,18 @@ public class DruidServiceImpl implements DruidService {
                     .pagingSpec(new PagingSpec(null, threshold))
                     .build();
 
-            // Fetch the results.
-            final long startTime = System.currentTimeMillis();
             final Sequence<Result<SelectResultValue>> resultSequence = druidClient.execute(selectQuery);
-            //
 
-            final List<Result<SelectResultValue>> resultList = Sequences.toList(
-                    resultSequence,
-                    Lists.<Result<SelectResultValue>>newArrayList()
-            );
-            final long fetchTime = System.currentTimeMillis() - startTime;
+            final List<Result<SelectResultValue>> resultList = Sequences.toList(resultSequence, Lists.<Result<SelectResultValue>>newArrayList());
 
-            //Print the results.
-            //create json object from the string
-
-
-            int resultCount = 0;
-
-
-            for (final Result<SelectResultValue> result : resultList) {
-
-                for (EventHolder eventHolder : result.getValue().getEvents()) {
-
-                    JSONObject jObject = new JSONObject(eventHolder.getEvent());
-
-
-                    dataList.add(wikiTicker(jObject));
-
-
-                    resultCount++;
-                }
-            }
-
-            // Print statistics.
-            System.out.println(
-                    String.format(
-                            "Fetched %,d rows in %,dms.",
-                            resultCount,
-                            fetchTime
-                    )
-            );
+            dataList = returnDataList(resultList);
+            printDataList(dataList);
         } catch (Exception e) {
             System.out.println(e);
 
         }
-        printDataList(dataList);
-        return dataList;
 
+        return dataList;
     }
 
     //Build data list
@@ -214,6 +176,7 @@ public class DruidServiceImpl implements DruidService {
         return wikiTicker;
     }
 
+    //Print results
     public void printDataList(List<WikiTicker> dataList){
 //        WikiTicker wikiTicker = new WikiTicker();
         for (WikiTicker wiki: dataList){

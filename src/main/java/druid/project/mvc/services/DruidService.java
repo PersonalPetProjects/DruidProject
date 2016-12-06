@@ -15,7 +15,7 @@ public interface DruidService {
 
     public List<WikiTicker> searchByCityName(String cityName);
 
-    public List<WikiTicker> searchByMetroCode(String metroCode);
+    public List<WikiTicker> searchByRegionName(String regionName);
 
 
 

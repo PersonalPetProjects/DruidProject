@@ -30,69 +30,36 @@ public class DruidTest {
     @Test
     public void searchByCountryName(){
 
-        WikiTicker wikiTicker = new WikiTicker();
-        List<WikiTicker> dataList = new ArrayList<>();
+        List<WikiTicker> dataList = druidService.searchByCountryName("United States");
 
-        dataList =  druidService.searchByCountryName("United States");
+        assertEquals(dataList.get(0).getPage(),"President of India");
 
-        for (WikiTicker wikiTicker1: dataList){
-
-               wikiTicker.setChannel(wikiTicker1.getChannel());
-               wikiTicker.setPage(wikiTicker1.getPage());
-               wikiTicker.setUser(wikiTicker1.getUser());
-               wikiTicker.setDelta(wikiTicker1.getDelta());
-               wikiTicker.setDeleted(wikiTicker1.getDeleted());
-
-               break;
-        }
-        assertNotNull(wikiTicker.getChannel());
-        assertEquals(wikiTicker.getPage(),"President of India");
-
-        }
-
+     }
 
     @Test
     public void searchByCityName(){
 
         String city = "Minneapolis";
 
-        WikiTicker wikiTicker = new WikiTicker();
+        List<WikiTicker> dataList = druidService.searchByCityName(city);
 
-        List<WikiTicker> dataList = new ArrayList<>();
+        String actual = dataList.get(0).getPage();
 
-        dataList =  druidService.searchByCityName(city);
+        String expected ="Austin High School (Minnesota)";
 
-             for (WikiTicker wiki: dataList){
-
-                 wikiTicker.setPage(wiki.getPage());
-
-             break;
-        }
-
-        assertEquals(wikiTicker.getPage(),"Austin High School (Minnesota)");
-        assertNotNull(dataList);
+        assertEquals(expected,actual);
     }
 
-
     @Test
-    public void searchByMetroCode(){
+    public void searchByRegion(){
     //Cant find out what the problem is here...
-        String metroCode = "90210";
+        String regionName = "Provincia di Bologna";
+
         WikiTicker wikiTicker = new WikiTicker();
 
-        List<WikiTicker> dataList = new ArrayList<>();
+        List<WikiTicker> dataList = druidService.searchByRegionName(regionName);
 
-        dataList =  druidService.searchByMetroCode(metroCode);
-
-        for (WikiTicker wiki: dataList){
-
-            wikiTicker.setPage(wiki.getPage());
-
-            break;
-        }
-
-//        assertEquals(wikiTicker.getPage(),"Austin High School (Minnesota)");
-        assertNotNull(dataList);
+        assertEquals(12, dataList.size());
     }
 
 
