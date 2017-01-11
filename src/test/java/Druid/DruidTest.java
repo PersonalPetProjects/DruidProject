@@ -38,7 +38,11 @@ public class DruidTest {
 
     @Test
     public void searchByCityName(){
-
+    	
+    	
+    	
+    	String home = "woodBury";
+    	
         String city = "Minneapolis";
 
         List<WikiTicker> dataList = druidService.searchByCityName(city);
